@@ -1,3 +1,0 @@
-Source,Amount,Date
-Salary,12000.0,2023-06-23
-Niggers,4000.0,2023-06-23
