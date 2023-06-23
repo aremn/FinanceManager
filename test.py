@@ -2,7 +2,6 @@ import random
 import csv
 import datetime
 from user import User
-from financial import Income, Expense
 
 
 def generate_random_data(user, num_entries):

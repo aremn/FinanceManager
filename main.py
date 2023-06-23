@@ -1,8 +1,8 @@
 from user import User
-from financial import Income, Expense
 from file_operations import save_data, load_data
-from visualization import plot_data
+from visualization import plot_data, monthly_totals, calculate_available_years
 import os
+import datetime
 
 
 def main(user, filename):
@@ -19,6 +19,7 @@ def main(user, filename):
             print("7. Save and Exit")
             print('----------------------')
             choice = input("Enter your choice: ")
+            years = calculate_available_years(user)
             if choice == "1":
                 for i, income in enumerate(user.predefined_incomes, start=1):
                     print(f"{i}. {income}")
@@ -52,10 +53,50 @@ def main(user, filename):
                     continue
                 user.add_expense(category, amount)
             elif choice == "3":
-                print(f"Total Income: {user.total_income()}")
-                print(f"Total Expense: {user.total_expense()}")
-                print(f"Savings: {user.savings()}")
-                plot_data(user, filename)
+                # calculate monthly totals
+                monthly_income, monthly_expense = monthly_totals(user)
+
+                # Current month summary
+                current_month = datetime.date.today().strftime('%Y-%m')
+                if current_month not in monthly_income:
+                    monthly_income[current_month] = 0
+                if current_month not in monthly_expense:
+                    monthly_expense[current_month] = 0
+
+                print(f"This month ({current_month}):")
+                print(f"Total Income: {monthly_income[current_month]}")
+                print(f"Total Expense: {monthly_expense[current_month]}")
+                print(f"Savings for this month: {monthly_income[current_month] - monthly_expense[current_month]}")
+
+                # Extra menu options for 3
+                while True:
+                    print("1. Change month")
+                    print("2. Make graphs")
+                    sub_choice = input("Enter your choice: ")
+                    if sub_choice == "1":
+                        print(f"Available years: {years}")
+                        selected_year = int(input("Enter a year: "))
+                        if selected_year in years:
+                            available_months = [date for date in monthly_income.keys() if
+                                                str(date).startswith(str(selected_year))]
+                            print(f"Available months for {selected_year}: {available_months}")
+                            selected_month = input("Enter a month (yyyy-mm): ")
+                            if selected_month in available_months:
+                                print(f"Selected month ({selected_month}):")
+                                print(f"Total Income: {monthly_income[selected_month]}")
+                                print(f"Total Expense: {monthly_expense[selected_month]}")
+                                print(
+                                    f"Savings for this month: {monthly_income[selected_month] - monthly_expense[selected_month]}")
+                            else:
+                                print("Invalid month.")
+                        else:
+                            print("Invalid year.")
+                    elif sub_choice == "2":
+                        plot_data(user, filename)
+                        break
+                    else:
+                        print("Invalid choice. Please enter again.")
+
             elif choice == "4":
                 print("All Incomes:")
                 for income in user.incomes:
@@ -89,7 +130,7 @@ if __name__ == "__main__":
         user = User(name)
         filename = f"{name}_data.csv"
         if os.path.exists(filename):
-            load_data(filename, user)
+            available_years = load_data(filename, user)
         main(user, filename)
     except Exception as e:
         print("An error occurred:", str(e))

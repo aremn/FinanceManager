@@ -4,6 +4,7 @@ import datetime
 import csv
 from collections import defaultdict
 
+
 def plot_data(user, filename):
     with open(filename, 'r') as file:
         reader = csv.reader(file)
@@ -32,7 +33,7 @@ def plot_data(user, filename):
         monthly_yearly_totals[month_year] -= expense.amount
 
     sorted_months = sorted(monthly_yearly_totals.keys(), key=lambda x: datetime.datetime.strptime(x, "%b-%Y"))
-    years = set(income.date.year for income in user.incomes) | set(expense.date.year for expense in user.expenses)
+    years = sorted(set(income.date.year for income in user.incomes) | set(expense.date.year for expense in user.expenses))
 
     selected_year = input(f"Available years: {years}\nEnter a year: ")
 
@@ -44,7 +45,6 @@ def plot_data(user, filename):
 
     fig, axs = plt.subplots(3, 2, figsize=(15, 15))
 
-    expense_categories = set(expense.category for expense in user.expenses)
     expense_totals = defaultdict(float)
     for expense in user.expenses:
         year = expense.date.year
@@ -54,7 +54,6 @@ def plot_data(user, filename):
     axs[0, 0].pie(list(expense_totals.values()), labels=list(expense_totals.keys()), autopct='%1.1f%%')
     axs[0, 0].set_title(f'Annual Expenses by Categories - {selected_year}')
 
-    income_sources = set(income.source for income in user.incomes)
     income_totals = defaultdict(float)
     for income in user.incomes:
         year = income.date.year
@@ -76,7 +75,8 @@ def plot_data(user, filename):
             source_of_funds[(month_year, expense.category)] -= expense.amount
 
     source_of_funds_df = pd.DataFrame.from_dict(source_of_funds, orient='index').reset_index()
-    source_of_funds_df[['Month', 'Source_of_Funds']] = pd.DataFrame(source_of_funds_df['index'].tolist(), index=source_of_funds_df.index)
+    source_of_funds_df[['Month', 'Source_of_Funds']] = pd.DataFrame(source_of_funds_df['index'].tolist(),
+                                                                    index=source_of_funds_df.index)
     source_of_funds_pivot = source_of_funds_df.pivot(index='Month', columns='Source_of_Funds', values=0)
 
     source_of_funds_pivot.plot(kind='bar', stacked=True, ax=axs[1, 0], edgecolor='black', linewidth=0.2, width=0.6)
@@ -124,3 +124,23 @@ def plot_data(user, filename):
     plt.show()
 
     fig.savefig('combined_plot.png')
+
+
+def monthly_totals(user):
+    monthly_income = defaultdict(float)
+    monthly_expense = defaultdict(float)
+    for income in user.incomes:
+        month_year = income.date.strftime("%Y-%m")
+        monthly_income[month_year] += income.amount
+
+    for expense in user.expenses:
+        month_year = expense.date.strftime("%Y-%m")
+        monthly_expense[month_year] += expense.amount
+
+    return monthly_income, monthly_expense
+
+
+def calculate_available_years(user):
+    available_years = set(income.date.year for income in user.incomes) | set(
+        expense.date.year for expense in user.expenses)
+    return available_years

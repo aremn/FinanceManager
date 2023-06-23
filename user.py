@@ -55,3 +55,26 @@ class User:
         if dates:
             return max(dates)
         return None
+
+    def total_income_month(self, year, month):
+        return sum(
+            [income.amount for income in self.incomes if income.date.year == year and income.date.month == month])
+
+    def total_expense_month(self, year, month):
+        return sum(
+            [expense.amount for expense in self.expenses if expense.date.year == year and expense.date.month == month])
+
+    def savings_month(self, year, month):
+        return self.total_income_month(year, month) - self.total_expense_month(year, month)
+
+    def available_years(self):
+        income_years = set(income.date.year for income in self.incomes)
+        expense_years = set(expense.date.year for expense in self.expenses)
+        return sorted(list(income_years | expense_years))
+
+    def available_months(self, year):
+        income_months = set(income.date.month for income in self.incomes if income.date.year == year)
+        expense_months = set(expense.date.month for expense in self.expenses if expense.date.year == year)
+        return sorted(list(income_months | expense_months))
+
+
