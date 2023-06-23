@@ -22,96 +22,58 @@ If you have any questions, suggestions, or issues, feel free to reach us at ncpa
 
 # Documentation
 
-## User Class
+## Module: visualization.py
 
-### __init__(self, name: str)
-Initializes a new User object.
+This module provides functions for visualizing financial data using matplotlib and seaborn libraries.
 
-**Parameters:**
-- name (str): The name of the user.
+### Functions
 
-### add_income(self, source: str, amount: float, date: Optional[datetime.date] = None)
-Adds a new income to the user's income list.
+- `plot_data(user, filename)`: Plots various financial data for a given user based on the data loaded from a CSV file. It generates multiple visualizations, including pie charts, bar charts, scatter plots, and saving them as image files.
 
-**Parameters:**
-- source (str): The source of the income.
-- amount (float): The amount of the income.
-- date (Optional[datetime.date]): The date when the income was received. Defaults to the current date.
+## Module: user.py
 
-### add_expense(self, category: str, amount: float, date: Optional[datetime.date] = None)
-Adds a new expense to the user's expense list.
+This module defines the User class, which represents a user with financial data.
 
-**Parameters:**
-- category (str): The category of the expense.
-- amount (float): The amount of the expense.
-- date (Optional[datetime.date]): The date when the expense was made. Defaults to the current date.
+### Classes
 
-### total_income(self) -> float
-Calculates the user's total income.
+- `User`: Represents a user with financial data.
 
-**Returns:** The total amount of income.
+### Methods
 
-### total_expense(self) -> float
-Calculates the user's total expenses.
+- `__init__(self, name, date_input='auto')`: Initializes a User object with the given name and date input preference.
+- `add_income(self, source, amount, date=None)`: Adds an income to the user's financial data.
+- `add_expense(self, category, amount, date=None)`: Adds an expense to the user's financial data.
+- `get_date(self)`: Prompts the user for a date and returns a valid date object.
+- `total_income(self)`: Calculates the total income of the user.
+- `total_expense(self)`: Calculates the total expense of the user.
+- `savings(self)`: Calculates the savings of the user.
+- `operation_count(self)`: Calculates the total number of operations (incomes and expenses) of the user.
+- `last_operation_date(self)`: Returns the date of the last operation performed by the user.
 
-**Returns:** The total amount of expenses.
+## Module: main.py
 
-### total_savings(self) -> float
-Calculates the user's total savings (total income - total expenses).
+This module is the entry point of the program and provides the main functionality.
 
-**Returns:** The total amount of savings.
+### Functions
 
-### get_expenses_summary(self) -> dict
-Gets a summary of the user's expenses, grouped by category.
+- `main(user, filename)`: Implements the main menu and handles user interactions with the program.
 
-**Returns:** A dictionary where the keys are expense categories and the values are the total amount spent in each category.
+## Module: financial.py
 
-## Income Class
+This module defines the Income and Expense classes, representing financial transactions.
 
-### __init__(self, source: str, amount: float, date: datetime.date)
-Initializes a new Income object.
+### Classes
 
-**Parameters:**
-- source (str): The source of the income.
-- amount (float): The amount of the income.
-- date (datetime.date): The date when the income was received.
+- `Income`: Represents an income transaction.
+- `Expense`: Represents an expense transaction.
 
-### __str__(self) -> str
-Returns a string representation of the Income object.
+### Module: file_operations.py
 
-## Expense Class
+This module provides functions for saving and loading financial data to/from a CSV file.
 
-### __init__(self, category: str, amount: float, date: datetime.date)
-Initializes a new Expense object.
+### Functions
 
-**Parameters:**
-- category (str): The category of the expense.
-- amount (float): The amount of the expense.
-- date (datetime.date): The date when the expense was made.
+- `save_data(user, filename)`: Saves the user's financial data to a CSV file.
+- `load_data(filename, user)`: Loads financial data from a CSV file and populates the user's data.
 
-### __str__(self) -> str
-Returns a string representation of the Expense object.
-
-## Functions
-
-### is_valid_date(date_string: str) -> bool
-Checks if a string can be parsed into a valid date.
-
-**Parameters:**
-- date_string (str): The string to check.
-
-**Returns:** True if the string can be parsed into a date, False otherwise.
-
-### parse_date(date_string: str) -> datetime.date
-Parses a string into a date.
-
-**Parameters:**
-- date_string (str): The string to parse.
-
-**Returns:** The parsed date.
-
-### main()
-The main function to start the program.
-
----
 
