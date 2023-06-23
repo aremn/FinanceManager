@@ -9,7 +9,7 @@ Personal Finance Manager is a tool for tracking a user's income and expenses. It
 To install and run the Personal Finance Manager, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/aremn/FinanceManager.git`
-2. Navigate to the project directory: `cd ACAFinance`
+2. Navigate to the project directory: `cd FinanceManager`
 3. Run the main Python file: `python main.py`
 
 ## Usage
